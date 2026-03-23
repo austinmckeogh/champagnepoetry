@@ -1,0 +1,32 @@
+{
+  "skills": {
+    "sensorbio-sales-crm": {
+      "enabled": true,
+      "skills": [
+        "hubspot-hygiene",
+        "hubspot-scorecard",
+        "hubspot-deal-query",
+        "hubspot-rep-briefing",
+        "hubspot-task-creator",
+        "hubspot-activity-logger",
+        "hubspot-pipeline-report"
+      ]
+    },
+    "kwall1/hubspot": {
+      "enabled": true
+    }
+  },
+  "env": {
+    "HUBSPOT_ACCESS_TOKEN": {
+      "$secretRef": "HUBSPOT_ACCESS_TOKEN"
+    },
+    "QUARTERLY_TARGET": "500000"
+  },
+  "gateway": {
+    "bind": "loopback"
+  },
+  "cron": {
+    "enabled": true,
+    "timezone": "America/Chicago"
+  }
+}

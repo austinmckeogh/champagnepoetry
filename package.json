@@ -1,0 +1,28 @@
+{
+  "name": "sensorbio-sales-crm",
+  "version": "1.0.0",
+  "description": "Sensor Bio Sales CRM Automation — 24/7 AI agent that monitors HubSpot CRM, enforces rep accountability, and reports via Slack",
+  "author": "Sensor Bio",
+  "license": "MIT",
+  "openclaw": {
+    "skills": [
+      "skills/hubspot-hygiene",
+      "skills/hubspot-scorecard",
+      "skills/hubspot-deal-query",
+      "skills/hubspot-rep-briefing",
+      "skills/hubspot-task-creator",
+      "skills/hubspot-activity-logger",
+      "skills/hubspot-pipeline-report"
+    ],
+    "dependencies": {
+      "kwall1/hubspot": "*"
+    }
+  },
+  "keywords": [
+    "openclaw",
+    "hubspot",
+    "sales-ops",
+    "crm",
+    "slack"
+  ]
+}
