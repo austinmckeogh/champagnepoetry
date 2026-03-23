@@ -18,7 +18,7 @@
   },
   "env": {
     "HUBSPOT_ACCESS_TOKEN": {
-      "$secretRef": "HUBSPOT_ACCESS_TOKEN"
+      "$secretRef": "na2-94f8-bac6-4a16-86bc-9316c48e89b1"
     },
     "QUARTERLY_TARGET": "500000"
   },
