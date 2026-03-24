@@ -10,6 +10,8 @@ import { VelocityTable } from './VelocityTable';
 import { AgingAnalysis } from './AgingAnalysis';
 import { HygieneSummary } from './HygieneSummary';
 import { RepPerformance } from './RepPerformance';
+import { Card } from './Card';
+import { formatCurrency } from '@/lib/format';
 
 const TABS = ['Scorecard', 'Pipeline', 'Hygiene', 'Reps'] as const;
 type Tab = (typeof TABS)[number];
@@ -55,15 +57,22 @@ export function DashboardShell() {
     return () => clearInterval(interval);
   }, [fetchData]);
 
+  const hygieneCount = hygiene?.summary.total ?? 0;
+
   return (
-    <div className="min-h-screen bg-gray-950 p-4 sm:p-6">
-      <div className="mx-auto max-w-7xl space-y-6">
+    <div className="min-h-screen p-4 sm:p-8">
+      <div className="mx-auto max-w-7xl space-y-8">
         {/* Header */}
-        <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-          <h1 className="text-xl font-bold text-white">Sensor Bio — Sales Dashboard</h1>
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <h1 className="text-2xl font-bold tracking-tight text-white">
+              Sensor Bio — Sales Dashboard
+            </h1>
+            <p className="mt-1 text-sm text-gray-500">Real-time CRM analytics & pipeline health</p>
+          </div>
           <div className="flex items-center gap-3 text-sm text-gray-400">
             {loading && (
-              <span className="flex items-center gap-1">
+              <span className="flex items-center gap-1.5">
                 <span className="inline-block h-2 w-2 animate-pulse rounded-full bg-blue-400" />
                 Refreshing...
               </span>
@@ -80,33 +89,82 @@ export function DashboardShell() {
             <button
               onClick={fetchData}
               disabled={loading}
-              className="rounded border border-gray-700 px-2 py-1 text-xs hover:border-gray-500 disabled:opacity-50"
+              className="rounded-lg border border-gray-700 px-3 py-1.5 text-xs font-medium transition hover:border-gray-500 hover:text-gray-200 disabled:opacity-50"
             >
               Refresh
             </button>
           </div>
         </div>
 
+        {/* Hero KPI Row */}
+        <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+          <KpiCard
+            label="Total Pipeline"
+            value={pipeline ? formatCurrency(pipeline.totalPipeline) : '—'}
+            loading={!pipeline}
+          />
+          <KpiCard
+            label="Weighted Forecast"
+            value={pipeline ? formatCurrency(pipeline.weightedForecast) : '—'}
+            loading={!pipeline}
+          />
+          <KpiCard
+            label="Coverage Ratio"
+            value={pipeline ? `${pipeline.coverageRatio.toFixed(1)}x` : '—'}
+            accent={
+              pipeline
+                ? pipeline.coverageRatio >= 3
+                  ? 'green'
+                  : pipeline.coverageRatio >= 2
+                    ? 'yellow'
+                    : 'red'
+                : undefined
+            }
+            loading={!pipeline}
+          />
+          <KpiCard
+            label="Hygiene Issues"
+            value={hygiene ? String(hygieneCount) : '—'}
+            accent={
+              hygiene
+                ? hygieneCount === 0
+                  ? 'green'
+                  : hygieneCount <= 3
+                    ? 'yellow'
+                    : 'red'
+                : undefined
+            }
+            loading={!hygiene}
+          />
+        </div>
+
+        <div className="border-t border-gray-800/40" />
+
         {/* Error */}
         {error && (
-          <div className="rounded-lg border border-red-500/30 bg-red-500/10 p-4 text-sm text-red-400">
+          <div className="rounded-xl border border-red-500/30 bg-red-500/10 p-4 text-sm text-red-400">
             {error}
           </div>
         )}
 
         {/* Tabs */}
-        <div className="flex gap-1 rounded-lg bg-gray-900 p-1">
+        <div className="flex gap-1 rounded-xl bg-gray-900/70 p-1 backdrop-blur">
           {TABS.map((t) => (
             <button
               key={t}
               onClick={() => setTab(t)}
-              className={`rounded-md px-4 py-2 text-sm font-medium transition ${
+              className={`relative rounded-lg px-4 py-2 text-sm font-medium transition ${
                 tab === t
-                  ? 'bg-gray-800 text-white'
+                  ? 'bg-gray-800 text-white shadow-sm'
                   : 'text-gray-400 hover:text-gray-200'
               }`}
             >
               {t}
+              {t === 'Hygiene' && hygieneCount > 0 && (
+                <span className="ml-1.5 inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-red-500/20 px-1.5 text-xs font-semibold text-red-400">
+                  {hygieneCount}
+                </span>
+              )}
             </button>
           ))}
         </div>
@@ -134,5 +192,36 @@ export function DashboardShell() {
         </div>
       </div>
     </div>
+  );
+}
+
+function KpiCard({
+  label,
+  value,
+  accent,
+  loading,
+}: {
+  label: string;
+  value: string;
+  accent?: 'green' | 'yellow' | 'red';
+  loading?: boolean;
+}) {
+  const accentColors = {
+    green: 'text-emerald-400',
+    yellow: 'text-amber-400',
+    red: 'text-red-400',
+  };
+
+  return (
+    <Card className="p-4">
+      <div className="text-xs font-medium uppercase tracking-wider text-gray-500">{label}</div>
+      {loading ? (
+        <div className="mt-2 h-8 w-24 animate-pulse rounded bg-gray-800" />
+      ) : (
+        <div className={`mt-1 text-2xl font-bold ${accent ? accentColors[accent] : 'text-white'}`}>
+          {value}
+        </div>
+      )}
+    </Card>
   );
 }

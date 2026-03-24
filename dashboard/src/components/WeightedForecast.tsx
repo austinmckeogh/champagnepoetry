@@ -3,14 +3,15 @@
 import type { PipelineData } from '@/lib/types';
 import { formatCurrency, formatPercent } from '@/lib/format';
 import { MetricCard } from './MetricCard';
+import { Card } from './Card';
 
 export function WeightedForecast({ data }: { data: PipelineData | null }) {
   if (!data) return null;
 
   return (
-    <div className="space-y-3">
+    <Card>
       <h3 className="text-base font-semibold text-white">Weighted Forecast</h3>
-      <div className="grid grid-cols-2 gap-3">
+      <div className="mt-4 grid grid-cols-2 gap-3">
         <MetricCard
           label="Weighted Pipeline"
           value={formatCurrency(data.weightedForecast)}
@@ -22,9 +23,9 @@ export function WeightedForecast({ data }: { data: PipelineData | null }) {
           subtitle={`Coverage: ${data.coverageRatio.toFixed(1)}x`}
         />
       </div>
-      <table className="w-full text-sm">
+      <table className="mt-4 w-full text-sm">
         <thead>
-          <tr className="border-b border-gray-800 text-left text-gray-400">
+          <tr className="border-b border-gray-700/50 text-left text-xs uppercase tracking-wider text-gray-500">
             <th className="pb-2 pr-4">Stage</th>
             <th className="pb-2 pr-4 text-right">Prob.</th>
             <th className="pb-2 pr-4 text-right">Raw</th>
@@ -32,8 +33,8 @@ export function WeightedForecast({ data }: { data: PipelineData | null }) {
           </tr>
         </thead>
         <tbody>
-          {data.stages.map((s) => (
-            <tr key={s.key} className="border-b border-gray-800/50">
+          {data.stages.map((s, i) => (
+            <tr key={s.key} className={i % 2 === 0 ? 'bg-gray-800/20' : ''}>
               <td className="py-1.5 pr-4 text-white">{s.name}</td>
               <td className="py-1.5 pr-4 text-right text-gray-400">{formatPercent(s.probability * 100)}</td>
               <td className="py-1.5 pr-4 text-right font-mono text-gray-300">{formatCurrency(s.value)}</td>
@@ -42,6 +43,6 @@ export function WeightedForecast({ data }: { data: PipelineData | null }) {
           ))}
         </tbody>
       </table>
-    </div>
+    </Card>
   );
 }

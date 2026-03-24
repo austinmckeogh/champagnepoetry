@@ -19,15 +19,15 @@ export function CoverageRatio({ data }: { data: PipelineData | null }) {
   };
 
   return (
-    <div className={`rounded-lg border p-4 ${colorClasses[color]}`}>
-      <div className="text-sm opacity-80">Pipeline Coverage</div>
+    <div className={`rounded-xl border p-5 backdrop-blur ${colorClasses[color]}`}>
+      <div className="text-sm font-medium opacity-80">Pipeline Coverage</div>
       <div className="mt-1 text-3xl font-bold">{ratio.toFixed(1)}x</div>
       <div className="mt-1 text-xs opacity-60">
         {formatCurrency(data.totalPipeline)} / {formatCurrency(data.quarterlyTarget)} target
       </div>
-      <div className="mt-2 h-2 overflow-hidden rounded-full bg-gray-800">
+      <div className="mt-3 h-2 overflow-hidden rounded-full bg-gray-800">
         <div
-          className={`h-full rounded-full ${color === 'green' ? 'bg-emerald-500' : color === 'yellow' ? 'bg-amber-400' : 'bg-red-500'}`}
+          className={`h-full rounded-full transition-all ${color === 'green' ? 'bg-emerald-500' : color === 'yellow' ? 'bg-amber-400' : 'bg-red-500'}`}
           style={{ width: `${Math.min(ratio / 5 * 100, 100)}%` }}
         />
       </div>

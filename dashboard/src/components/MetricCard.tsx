@@ -10,9 +10,19 @@ interface MetricCardProps {
   color?: TrafficLightColor;
 }
 
+const accentBorder: Record<TrafficLightColor, string> = {
+  green: 'border-l-emerald-500',
+  yellow: 'border-l-amber-400',
+  red: 'border-l-red-500',
+};
+
 export function MetricCard({ label, value, subtitle, color }: MetricCardProps) {
   return (
-    <div className="rounded-lg border border-gray-800 bg-gray-900 p-4">
+    <div
+      className={`rounded-xl border border-gray-800/60 bg-gray-900/50 p-4 backdrop-blur ${
+        color ? `border-l-2 ${accentBorder[color]}` : ''
+      }`}
+    >
       <div className="flex items-center justify-between">
         <span className="text-sm text-gray-400">{label}</span>
         {color && <TrafficLight color={color} />}

@@ -3,6 +3,7 @@
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 import type { PipelineData } from '@/lib/types';
 import { formatCurrency } from '@/lib/format';
+import { Card } from './Card';
 
 const COLORS = ['#6366f1', '#8b5cf6', '#a78bfa', '#c4b5fd', '#818cf8', '#6d28d9'];
 
@@ -16,9 +17,9 @@ export function PipelineByStage({ data }: { data: PipelineData | null }) {
   }));
 
   return (
-    <div className="space-y-3">
+    <Card>
       <h3 className="text-base font-semibold text-white">Pipeline by Stage</h3>
-      <div className="h-64">
+      <div className="mt-4 h-64">
         <ResponsiveContainer width="100%" height="100%">
           <BarChart data={chartData}>
             <XAxis dataKey="name" tick={{ fill: '#9ca3af', fontSize: 11 }} />
@@ -39,9 +40,9 @@ export function PipelineByStage({ data }: { data: PipelineData | null }) {
           </BarChart>
         </ResponsiveContainer>
       </div>
-      <table className="w-full text-sm">
+      <table className="mt-4 w-full text-sm">
         <thead>
-          <tr className="border-b border-gray-800 text-left text-gray-400">
+          <tr className="border-b border-gray-700/50 text-left text-xs uppercase tracking-wider text-gray-500">
             <th className="pb-2 pr-4">Stage</th>
             <th className="pb-2 pr-4 text-right">Deals</th>
             <th className="pb-2 pr-4 text-right">Value</th>
@@ -49,15 +50,15 @@ export function PipelineByStage({ data }: { data: PipelineData | null }) {
           </tr>
         </thead>
         <tbody>
-          {data.stages.map((s) => (
-            <tr key={s.key} className="border-b border-gray-800/50">
+          {data.stages.map((s, i) => (
+            <tr key={s.key} className={i % 2 === 0 ? 'bg-gray-800/20' : ''}>
               <td className="py-1.5 pr-4 text-white">{s.name}</td>
               <td className="py-1.5 pr-4 text-right text-gray-300">{s.count}</td>
               <td className="py-1.5 pr-4 text-right font-mono text-gray-300">{formatCurrency(s.value)}</td>
               <td className="py-1.5 text-right font-mono text-gray-400">{formatCurrency(s.weightedValue)}</td>
             </tr>
           ))}
-          <tr className="font-semibold">
+          <tr className="border-t border-gray-700/50 font-semibold">
             <td className="pt-2 pr-4 text-white">Total</td>
             <td className="pt-2 pr-4 text-right text-white">{data.stages.reduce((s, d) => s + d.count, 0)}</td>
             <td className="pt-2 pr-4 text-right font-mono text-white">{formatCurrency(data.totalPipeline)}</td>
@@ -65,6 +66,6 @@ export function PipelineByStage({ data }: { data: PipelineData | null }) {
           </tr>
         </tbody>
       </table>
-    </div>
+    </Card>
   );
 }

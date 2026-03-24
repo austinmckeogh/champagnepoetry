@@ -3,6 +3,7 @@
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
 import type { PipelineData } from '@/lib/types';
 import { formatCurrency } from '@/lib/format';
+import { Card } from './Card';
 
 export function AgingAnalysis({ data }: { data: PipelineData | null }) {
   if (!data) return null;
@@ -14,9 +15,9 @@ export function AgingAnalysis({ data }: { data: PipelineData | null }) {
   }));
 
   return (
-    <div className="space-y-3">
+    <Card>
       <h3 className="text-base font-semibold text-white">Deal Aging</h3>
-      <div className="h-48">
+      <div className="mt-4 h-48">
         <ResponsiveContainer width="100%" height="100%">
           <BarChart data={chartData}>
             <XAxis dataKey="name" tick={{ fill: '#9ca3af', fontSize: 11 }} />
@@ -33,15 +34,15 @@ export function AgingAnalysis({ data }: { data: PipelineData | null }) {
           </BarChart>
         </ResponsiveContainer>
       </div>
-      <div className="grid grid-cols-4 gap-2 text-center text-sm">
+      <div className="mt-4 grid grid-cols-4 gap-2 text-center text-sm">
         {data.aging.map((b) => (
-          <div key={b.label} className="rounded border border-gray-800 p-2">
+          <div key={b.label} className="rounded-lg border border-gray-800/60 bg-gray-800/30 p-2">
             <div className="text-gray-400">{b.label}</div>
             <div className="font-semibold text-white">{b.count} deals</div>
             <div className="text-xs text-gray-500">{formatCurrency(b.value)}</div>
           </div>
         ))}
       </div>
-    </div>
+    </Card>
   );
 }

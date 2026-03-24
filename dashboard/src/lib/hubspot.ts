@@ -29,7 +29,7 @@ export async function getAllDeals(): Promise<Deal[]> {
 
   do {
     const params = new URLSearchParams({
-      limit: '100',
+      limit: '50',
       properties: DEAL_PROPERTIES.join(','),
       propertiesWithHistory: 'dealstage',
     });
