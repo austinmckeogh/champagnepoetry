@@ -6,9 +6,11 @@
 set -euo pipefail
 
 TZ="${OPENCLAW_TZ:-America/Chicago}"
-FLAGS="--session isolated --tz $TZ"
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+FLAGS="--session isolated --tz $TZ --pre-run \"bash $SCRIPT_DIR/refresh-token.sh\""
 
 echo "Registering Sensor Bio Sales CRM cron jobs (timezone: $TZ)..."
+echo "Token refresh will run before each job."
 echo ""
 
 # Morning Hygiene — 8:30 AM daily
@@ -67,5 +69,13 @@ openclaw cron add \
   $FLAGS
 echo "✓ eod-activity-check (5:00 PM Mon-Fri → #sales-ops)"
 
+# Token Refresh — every 25 minutes to keep OAuth token alive
+openclaw cron add \
+  --name "token-refresh" \
+  --schedule "*/25 * * * *" \
+  --exec "bash $SCRIPT_DIR/refresh-token.sh" \
+  --tz $TZ
+echo "✓ token-refresh (every 25 min — keeps OAuth token alive)"
+
 echo ""
-echo "All 6 cron jobs registered. Verify with: openclaw cron list"
+echo "All 7 jobs registered. Verify with: openclaw cron list"
